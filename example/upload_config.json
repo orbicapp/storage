@@ -1,0 +1,4 @@
+{
+  "worker_url": "http://localhost:8787",
+  "jwt_secret": "your-super-secret-jwt-key-change-this"
+}

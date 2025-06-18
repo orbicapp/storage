@@ -1,0 +1,39 @@
+{
+  "name": "uoa-upload-worker",
+  "version": "1.0.0",
+  "description": "UOA Worker for file uploads with JWT authentication and R2 storage",
+  "main": "src/index.ts",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "build": "wrangler build",
+    "tail": "wrangler tail",
+    "test": "vitest",
+    "test:watch": "vitest --watch",
+    "type-check": "tsc --noEmit",
+    "build:ts": "bun build ./src/index.ts --outdir ./dist --target node"
+  },
+  "dependencies": {
+    "@hono/zod-validator": "^0.7.0",
+    "hono": "^3.12.0",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20231218.0",
+    "@types/node": "^20.10.5",
+    "typescript": "^5.8.3",
+    "vitest": "^1.1.0",
+    "wrangler": "^3.19.0"
+  },
+  "keywords": [
+    "cloudflare",
+    "worker",
+    "hono",
+    "jwt",
+    "r2",
+    "file-upload",
+    "multipart"
+  ],
+  "author": "Sammwy",
+  "license": "MIT"
+}

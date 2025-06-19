@@ -96,7 +96,7 @@ const backendAuth = async (
     c.set("user", payload);
     return await next();
   } catch (error) {
-    return c.json({ success: false, error: "Invalid token" }, 401);
+    return c.json({ success: false, error: "Invalid token (Back)" }, 401);
   }
 };
 
@@ -133,7 +133,7 @@ const clientAuth = async (
     c.set("user", payload);
     return await next();
   } catch (error) {
-    return c.json({ success: false, error: "Invalid token" }, 401);
+    return c.json({ success: false, error: "Invalid token (Client)" }, 401);
   }
 };
 
@@ -347,7 +347,10 @@ app.put("/upload/part/:partNumber", clientAuth, async (c) => {
     const payload = c.get("user") as ClientJWTPayload;
 
     if (!payload || payload.type !== "client") {
-      return c.json({ success: false, error: "Invalid token" }, 401);
+      return c.json(
+        { success: false, error: "Invalid token (Client was expected)" },
+        401
+      );
     }
 
     const body = await c.req.arrayBuffer();
@@ -418,7 +421,10 @@ app.get("/upload/progress", clientAuth, async (c) => {
     const payload = c.get("user") as ClientJWTPayload;
 
     if (!payload || payload.type !== "client") {
-      return c.json({ success: false, error: "Invalid token" }, 401);
+      return c.json(
+        { success: false, error: "Invalid token (Client was expected)" },
+        401
+      );
     }
 
     const uploadedBytes = await getUploadProgress(c.env.KV, payload.uploadId);

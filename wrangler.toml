@@ -2,7 +2,7 @@ name = "uoa-storage"
 main = "src/index.ts"
 compatibility_date = "2024-10-25"
 compatibility_flags = ["nodejs_compat"]
-
+routes = [{ pattern = "storage.chat.sammwy.com", custom_domain = true }]
 
 [[r2_buckets]]
 binding = "BUCKET"
@@ -14,3 +14,6 @@ id = "57bbd18772b74d4da0fabcdf3919faec"
 
 [build]
 command = "bun run build:ts"
+
+[observability.logs]
+enabled = true

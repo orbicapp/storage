@@ -96,7 +96,10 @@ const backendAuth = async (
     c.set("user", payload);
     return await next();
   } catch (error) {
-    return c.json({ success: false, error: "Invalid token (Back)" }, 401);
+    return c.json(
+      { success: false, error: "Invalid token (Back): " + error },
+      401
+    );
   }
 };
 
@@ -133,7 +136,10 @@ const clientAuth = async (
     c.set("user", payload);
     return await next();
   } catch (error) {
-    return c.json({ success: false, error: "Invalid token (Client)" }, 401);
+    return c.json(
+      { success: false, error: "Invalid token (Client): " + error },
+      401
+    );
   }
 };
 

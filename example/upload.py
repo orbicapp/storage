@@ -44,7 +44,7 @@ class MultipartUploader:
         payload = {
             "type": "backend",
             "action": action,
-            "iat": int(time.time()),
+            "iat": int(time.time()) - 60,
             "exp": int(time.time()) + 3600  # 1 hour expiration
         }
         return jwt.encode(payload, self.jwt_secret, algorithm="HS256")
@@ -71,12 +71,17 @@ class MultipartUploader:
         }
         kwargs["headers"] = headers
         
+        error = None
+        
         try:
             response = requests.request(method, url, **kwargs)
+            body = response.json()
+            if not body.get("success"):
+                error = body.get("error")
             response.raise_for_status()
             return response
         except requests.exceptions.RequestException as e:
-            raise UploadError(f"Request failed: {e}")
+            raise UploadError(f"Request failed: {e}: {error}")
     
     def create_upload(self, file_id: str, file_size: int, mime_type: str) -> Dict[str, Any]:
         """Create multipart upload on the server"""

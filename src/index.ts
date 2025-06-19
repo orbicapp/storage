@@ -1,5 +1,6 @@
 import { zValidator } from "@hono/zod-validator";
 import { Context, Hono, Next } from "hono";
+import { cors } from "hono/cors";
 import { sign, verify } from "hono/jwt";
 import { z } from "zod";
 
@@ -47,6 +48,17 @@ interface ClientJWTPayload {
 }
 
 const app = new Hono<{ Bindings: Env }>();
+
+// Cors
+app.use(
+  "*",
+  cors({
+    origin: (origin: string) => {
+      return origin;
+    },
+    credentials: true,
+  })
+);
 
 // Middleware to validate backend JWT
 const backendAuth = async (
@@ -281,9 +293,54 @@ app.delete("/upload/abort/:uploadId", backendAuth, async (c) => {
   }
 });
 
+// 4. Delete file
+app.delete("/file/:fileId", backendAuth, async (c) => {
+  try {
+    const fileId = c.req.param("fileId");
+    const bucket = c.env.BUCKET;
+
+    // Check if file exists
+    const object = await bucket.head(fileId);
+
+    if (!object) {
+      return c.json(
+        {
+          success: false,
+          error: "File not found",
+        },
+        404
+      );
+    }
+
+    // Delete file
+    await bucket.delete(fileId);
+
+    // Delete KV garbage
+    try {
+      await c.env.KV.delete(`${KV_PREFIX}${fileId}`);
+    } catch (kvError) {
+      console.warn(`Could not delete KV entry for ${fileId}:`, kvError);
+    }
+
+    return c.json({
+      success: true,
+      message: `File ${fileId} deleted successfully`,
+    });
+  } catch (error: any) {
+    console.error(`Error deleting file ${c.req.param("fileId")}:`, error);
+    return c.json(
+      {
+        success: false,
+        error: error.message || "Failed to delete file",
+      },
+      500
+    );
+  }
+});
+
 // Client routes (with client JWT)
 
-// 4. Upload file part
+// 5. Upload file part
 app.put("/upload/part/:partNumber", clientAuth, async (c) => {
   try {
     const partNumber = parseInt(c.req.param("partNumber"));
@@ -355,7 +412,7 @@ app.put("/upload/part/:partNumber", clientAuth, async (c) => {
   }
 });
 
-// 5. Get upload progress
+// 6. Get upload progress
 app.get("/upload/progress", clientAuth, async (c) => {
   try {
     const payload = c.get("user") as ClientJWTPayload;
@@ -384,7 +441,7 @@ app.get("/upload/progress", clientAuth, async (c) => {
   }
 });
 
-// 6. Serve files (public)
+// 7. Serve files (public)
 app.get("/file/:fileId", async (c) => {
   try {
     const fileId = c.req.param("fileId");

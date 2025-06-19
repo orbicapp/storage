@@ -225,7 +225,7 @@ class MultipartUploader:
                 return file_url
                 
             except Exception as e:
-                # Abort upload on error
+                print(f"Error: {e}")
                 self.abort_upload(upload_id, resource_name)
                 raise
                 

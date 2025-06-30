@@ -1,10 +1,10 @@
 {
-  "name": "uoa-upload-worker",
+  "name": "orbic-upload-worker",
   "version": "1.0.0",
-  "description": "UOA Worker for file uploads with JWT authentication and R2 storage",
+  "description": "Orbic Worker for file uploads with JWT authentication and R2 storage",
   "main": "src/index.ts",
   "scripts": {
-    "dev": "wrangler dev",
+    "dev": "wrangler dev --port 8787 --host 0.0.0.0",
     "deploy": "wrangler deploy",
     "build": "wrangler build",
     "tail": "wrangler tail",

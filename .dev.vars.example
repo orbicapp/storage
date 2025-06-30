@@ -1,2 +1,3 @@
 JWT_SECRET="your-super-secret-jwt-key-change-this"
+ALLOWED_ORIGINS="example.com"
 MODE="development"

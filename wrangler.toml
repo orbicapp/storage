@@ -6,7 +6,7 @@ routes = [{ pattern = "storage.orbic.me", custom_domain = true }]
 
 [[r2_buckets]]
 binding = "BUCKET"
-bucket_name = "orbic-bucket"
+bucket_name = "orbic-bucket-prod"
 
 [[kv_namespaces]]
 binding = "KV"
